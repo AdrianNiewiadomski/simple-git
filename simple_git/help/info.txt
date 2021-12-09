@@ -1,0 +1,13 @@
+usage: simplegit <command>
+
+These are common Simplegit commands used in various situations:
+
+   init       Create an empty Simplegit repository or reinitialize an existing one
+   status     Show the working tree status
+   commit     Record changes to the repository
+
+To add files and directories to the index use
+
+   add [<file>]       Add list of files contents to the index
+or
+   add *              To add all files and directories
