@@ -3,7 +3,7 @@ from simple_git import SimplegitRunner
 
 
 def main():
-	SimplegitRunner(sys.argv).run()
+	SimplegitRunner().run(sys.argv)
 
 
 if __name__ == "__main__":

@@ -8,10 +8,17 @@ class SimplegitRunner:
         "commit",
         "status"
     }
+    parameterless_commands = {
+        "init",
+        "commit",
+        "status"
+    }
 
-    def __init__(self, args: list):
+    def __init__(self):
         self.command = None
         self.parameters = None
+
+    def run(self, args: list):
         self._get_command_and_parameters_from_command_line_arguments(args)
 
     def _get_command_and_parameters_from_command_line_arguments(self, args: list):
@@ -28,7 +35,7 @@ class SimplegitRunner:
             SimplegitRunner.display_help()
         elif args[1] == "add" and len(args) < 3:
             print("Simplegit add command must be run with parameters!")
-        elif len(args) > 2:
+        elif args[1] in SimplegitRunner.parameterless_commands and len(args) > 2:
             print("Simplegit init, commit and status commands must be run without parameters!")
         else:
             return True
@@ -40,6 +47,3 @@ class SimplegitRunner:
         print("info_file_path: ", info_file_path)
         with open(info_file_path, "r") as file:
             print(file.read())
-
-    def run(self):
-        pass
