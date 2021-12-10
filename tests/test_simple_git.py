@@ -15,3 +15,6 @@ class TestSimplegit(unittest.TestCase):
 
     def status(self):
         pass
+
+    def test_get_recorded_files(path):
+        print(Simplegit._get_recorded_files("test_data/.simplegit/stage.txt"))
