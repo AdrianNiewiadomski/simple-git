@@ -2,6 +2,7 @@ import os
 import shutil
 import stat
 import time
+import hashlib
 
 
 class Simplegit:
@@ -26,7 +27,7 @@ class Simplegit:
     def status():
         all_paths = Simplegit._get_all_paths()
         for path in all_paths:
-            print(path, ":", time.ctime(os.stat(path)[ stat.ST_MTIME ]))
+            print(path, " : ", time.ctime(os.stat(path)[stat.ST_MTIME]), " : ", Simplegit.get_digest(path))
 
     @staticmethod
     def _get_all_paths():
@@ -42,3 +43,17 @@ class Simplegit:
             path = file_names[0] + "/" + file
             paths.append(path[2:])
         return paths
+
+    @staticmethod
+    def get_digest(file_path):
+        h = hashlib.sha256()
+
+        with open(file_path, 'rb') as file:
+            while True:
+                # Reading is buffered, so we can read smaller chunks.
+                chunk = file.read(h.block_size)
+                if not chunk:
+                    break
+                h.update(chunk)
+
+        return h.hexdigest()
