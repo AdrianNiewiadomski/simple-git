@@ -1,10 +1,6 @@
 import sys
-from simple_git import SimplegitRunner
+from simple_git.simple_git_runner import SimplegitRunner
 
 
 def main():
-	SimplegitRunner().run(sys.argv)
-
-
-if __name__ == "__main__":
-	exit(main())
+	exit(SimplegitRunner().run(sys.argv))
