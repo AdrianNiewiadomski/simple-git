@@ -33,7 +33,7 @@ class SimplegitRunner:
     def _validate_command_line_arguments(args: list) -> bool:
         if len(args) <= 1 or args[1] not in SimplegitRunner.parameterless_commands.keys() and args[1] not in \
                 SimplegitRunner.other_commands.keys():
-            SimplegitRunner.display_help()
+            SimplegitRunner._display_help()
         elif args[1] in SimplegitRunner.other_commands.keys() and len(args) < 3:
             print("Simplegit add command must be run with parameters!")
         elif args[1] in SimplegitRunner.parameterless_commands and len(args) > 2:
@@ -43,7 +43,7 @@ class SimplegitRunner:
         return False
 
     @staticmethod
-    def display_help() -> None:
+    def _display_help() -> None:
         info_file_path = os.path.realpath(__file__)[:os.path.realpath(__file__).rfind("/")] + "/help/info.txt"
         with open(info_file_path, "r") as file:
             print(file.read())

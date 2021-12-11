@@ -10,17 +10,20 @@ class NothingToCommitException(Exception):
 
 class Simplegit:
     @staticmethod
-    def initialize_repozitory():
+    def initialize_repozitory() -> None:
         if os.path.exists(".simplegit"):
             shutil.rmtree(".simplegit", ignore_errors=True)
 
         os.mkdir(".simplegit")
-        with open(".simplegit/stage.txt", "w") as file:
-            file.write("")
-        with open(".simplegit/repository.txt", "w") as file:
-            file.write("")
+        Simplegit._create_empty_file(".simplegit/stage.txt")
+        Simplegit._create_empty_file(".simplegit/repository.txt")
 
-        print("Initialized empty Git repository")
+        print("Initialized empty Simplegit repository")
+
+    @staticmethod
+    def _create_empty_file(path: str) -> None:
+        with open(path, "w") as file:
+            file.write("")
 
     @staticmethod
     def status() -> None:
@@ -125,27 +128,28 @@ class Simplegit:
     @staticmethod
     def _add_all_files(files_to_add: dict) -> None:
         staged_files: dict = Simplegit._get_recorded_files('.simplegit/stage.txt')
+        files_to_add = Simplegit._complete_dictionary(files_to_add, staged_files)
+        Simplegit._save_dictionary_in_file(".simplegit/stage.txt", files_to_add)
 
-        for k, v in staged_files.items():
-            if k not in files_to_add:
-                files_to_add[k] = v
+    @staticmethod
+    def _complete_dictionary(dict_1, dict_2) -> dict:
+        for k, v in dict_2.items():
+            if k not in dict_1:
+                dict_1[k] = v
+        return dict_1
 
-        with open(".simplegit/stage.txt", "w") as file:
-            for k, v in files_to_add.items():
+    @staticmethod
+    def _save_dictionary_in_file(path: str, dictionary: dict) -> None:
+        with open(path, "w") as file:
+            for k, v in dictionary.items():
                 file.write(k + " : " + v + "\n")
 
     @staticmethod
-    def commit_changes():
+    def commit_changes() -> None:
         staged_files: dict = Simplegit._get_recorded_files('.simplegit/stage.txt')
         repository_files: dict = Simplegit._get_recorded_files('.simplegit/repository.txt')
 
-        for k, v in repository_files.items():
-            if k not in staged_files:
-                staged_files[k] = v
+        staged_files = Simplegit._complete_dictionary(staged_files, repository_files)
 
-        with open(".simplegit/stage.txt", "w") as file:
-            file.write("")
-
-        with open(".simplegit/repository.txt", "w") as file:
-            for k, v in staged_files.items():
-                file.write(k + " : " + v + "\n")
+        Simplegit._create_empty_file(".simplegit/stage.txt")
+        Simplegit._save_dictionary_in_file(".simplegit/repository.txt", staged_files)
