@@ -2,8 +2,6 @@ import os
 import shutil
 import hashlib
 
-# from .file import File
-
 
 class Simplegit:
     @staticmethod
@@ -23,23 +21,13 @@ class Simplegit:
             print("fatal: not a simplegit repository")
         else:
             all_paths = Simplegit._get_all_paths()
-            current_files = {(path, Simplegit.get_digest(path)) for path in all_paths}
-            # current_files = [File(path, Simplegit.get_digest(path)) for path in all_paths]
-            # current_files = {str(file) for file in current_files}
+            current_files = {path: Simplegit.get_digest(path) for path in all_paths}
 
-            print("current_files:")
-            print(type(current_files))
-            for item in current_files:
-                print(item)
-
-            print("staged_files:")
+            repository_files = Simplegit._get_recorded_files('.simplegit/repository.txt')
             staged_files = Simplegit._get_recorded_files('.simplegit/stage.txt')
-            # staged_files = [File.create_from_string(file) for file in staged_files]
-            # staged_files = {str(file) for file in staged_files}
 
-            print(type(staged_files))
-            for item in staged_files:
-                print(item)
+            new, staged, modified = Simplegit._analyze_files(current_files, repository_files, staged_files)
+            Simplegit._display_analysis_result(new, staged, modified)
 
     @staticmethod
     def _get_all_paths():
@@ -75,11 +63,42 @@ class Simplegit:
     def _get_recorded_files(path):
         with open(path, 'r') as f:
             files = f.readlines()
-        # return files
-        return {tuple(file.strip().split(" : ")) for file in files}
-    #
-    # "123 : abc\n".strip().split(" : ")
-    # ['123', 'abc']
+        return {file.strip().split(" : ")[0]: file.strip().split(" : ")[1] for file in files}
+
+    @staticmethod
+    def _analyze_files(current_files, repository_files, staged_files):
+        new = []
+        staged = []
+        modified = []
+
+        if current_files == repository_files and not bool(staged_files):
+            print("Nothing to commit")
+            return
+        else:
+            for k, v in current_files.items():
+                if k not in repository_files and k not in staged_files:
+                    new.append(k)
+                elif k in staged_files and current_files[k] == staged_files[k]:
+                    staged.append(k)
+                elif k not in staged_files and k in repository_files and current_files[k] != repository_files[k]:
+                    modified.append(k)
+
+        return new, staged, modified
+
+    @staticmethod
+    def _display_analysis_result(new, staged, modified):
+        def display_result(file_list, name):
+            for file in file_list:
+                print(f"> {file} ({name} file)")
+
+        display_result(new, "new")
+        display_result(staged, "staged")
+        display_result(modified, "modified")
+
+
+
+
+
 
     @staticmethod
     def add_files(parameters):
