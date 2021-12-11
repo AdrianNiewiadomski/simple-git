@@ -1,6 +1,6 @@
 import unittest
 
-from simple_git.simple_git import Simplegit
+from simple_git.simple_git import Simplegit, NothingToCommitException
 
 
 class TestSimplegit(unittest.TestCase):
@@ -21,7 +21,8 @@ class TestSimplegit(unittest.TestCase):
 
     def test_analyze_files_nothing_to_commit(self):
         some_dict = {'a': 1, 'b': 2}
-        self.assertIsNone(Simplegit._analyze_files(some_dict, some_dict, {}))
+        with self.assertRaises(NothingToCommitException):
+            Simplegit._analyze_files(some_dict, some_dict, {})
 
     def test_analyze_files_new_files(self):
         result = Simplegit._analyze_files({"a": "1", "b": "2"}, {}, {})
