@@ -1,0 +1,2 @@
+class MethodCalledException(Exception):
+    pass

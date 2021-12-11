@@ -20,9 +20,9 @@ class SimplegitRunner:
     def run(self, args: list) -> None:
         self._get_command_and_parameters_from_command_line_arguments(args)
         if self.command in self.parameterless_commands:
-            SimplegitRunner.parameterless_commands[self.command]()
+            self.parameterless_commands[self.command]()
         elif self.command in self.other_commands:
-            SimplegitRunner.other_commands[self.command](self.parameters)
+            self.other_commands[self.command](self.parameters)
 
     def _get_command_and_parameters_from_command_line_arguments(self, args: list) -> None:
         if SimplegitRunner._validate_command_line_arguments(args):
